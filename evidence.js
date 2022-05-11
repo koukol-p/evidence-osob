@@ -20,6 +20,7 @@ function createUUID() {
     return v.toString(16);
   });
 }
+
 const clearForm = () => {
   nameField.value = "";
   surnameField.value = "";
@@ -28,6 +29,7 @@ const clearForm = () => {
   addressField.value = "";
   municipalityField.value = "";
 };
+
 const showForm = () => {
   if (!localStorage.currentUUID) {
     buttonDelete.style.display = "none";
@@ -35,25 +37,29 @@ const showForm = () => {
   userForm.style.display = "block";
   userTable.style.display = "none";
 };
+
 const showTable = () => {
   userTable.style.display = "table";
   userForm.style.display = "none";
 };
+
 const dateStringFormat = (dateStr) => {
   const [y, m, d] = dateStr.split("-");
   return [d, m, y].join(".");
 };
+
 const sortBy = (key) => {
   return (a, b) => {
-    if (a[key] < b[key]) {
+    if (a[key].toLowerCase() < b[key].toLowerCase()) {
       return -1;
     }
-    if (a[key] > b[key]) {
+    if (a[key].toLowerCase() > b[key].toLowerCase()) {
       return 1;
     }
     return 0;
   };
 };
+
 const fetchAddr = async (term) => {
   const res = await fetch(
     `https://api.mapy.cz/suggest/?count=5&bounds=48.5370786%2C12.0921668%7C51.0746358%2C18.8927040&phrase=${term}`
@@ -62,10 +68,9 @@ const fetchAddr = async (term) => {
   return data.result;
 };
 
-addressField.addEventListener("input", async (e) => {
-    municipalityField.value = ""
+getSuggestions = async (e) => {
+  municipalityField.value = "";
   const results = await fetchAddr(addressField.value);
-  console.log(results);
   const suggestionList = document.createElement("ul");
   suggestionList.classList.add("suggestion-list");
   results.forEach((r) => {
@@ -96,25 +101,12 @@ addressField.addEventListener("input", async (e) => {
       .querySelector(".address-container")
       .replaceChild(suggestionList, document.querySelector(".suggestion-list"));
   }
-});
+};
 
-// "page" toggle
-header.addEventListener("click", (e) => {
-  switch (e.target.id) {
-    case "show-form":
-      localStorage.removeItem("currentUUID");
-      clearForm();
-      showForm();
-      break;
-    case "show-table":
-      showTable();
-      fetchAndDisplayUsers();
-      break;
-  }
-});
 
-// form submit
-userForm.addEventListener("submit", (e) => {
+
+
+const handleSubmit = (e) => {
   e.preventDefault();
   const name = nameField.value.trim();
   const surname = surnameField.value.trim();
@@ -175,7 +167,8 @@ userForm.addEventListener("submit", (e) => {
   localStorage.removeItem("currentUUID");
   clearForm();
   fetchAndDisplayUsers();
-});
+};
+
 
 const fetchAndDisplayUsers = () => {
   const users = Object.keys(localStorage)
@@ -209,10 +202,10 @@ const fetchAndDisplayUsers = () => {
 
     userElement.appendChild(surnameCell);
     userElement.appendChild(nameCell);
-    userElement.appendChild(genderCell);
-    userElement.appendChild(birthCell);
     userElement.appendChild(addressCell);
     userElement.appendChild(municipalityCell);
+    userElement.appendChild(genderCell);
+    userElement.appendChild(birthCell);
 
     return userElement;
   });
@@ -231,29 +224,51 @@ const editUser = (event) => {
   surnameField.value = userObj.surname;
   genderField.value = userObj.gender;
   birthField.value = userObj.birth;
-  console.dir(birthField);
   addressField.value = userObj.address;
   municipalityField.value = userObj.municipality;
-
 
   //show delete btn
   buttonDelete.style.display = "block";
   localStorage.setItem("currentUUID", clickedElement.uuid);
   showForm();
 };
-userTable.addEventListener("click", (e) => {
-  // prevent editUser firing on other table-related elements
-  if (e.target.tagName === "TD") {
-    editUser(e);
-  }
-});
+
 
 const removeUser = () => {
   localStorage.removeItem(localStorage.getItem("currentUUID"));
+  localStorage.removeItem("currentUUID");
 };
+
+
+
+// Event listeners
 buttonDelete.addEventListener("click", () => {
   removeUser();
   showTable();
-  // todo - fetch data from localStorage
   fetchAndDisplayUsers();
 });
+
+
+addressField.addEventListener("input", getSuggestions);
+userForm.addEventListener("submit", handleSubmit);
+// "page" toggle
+header.addEventListener("click", (e) => {
+    switch (e.target.id) {
+      case "show-form":
+        localStorage.removeItem("currentUUID");
+        clearForm();
+        showForm();
+        break;
+      case "show-table":
+        showTable();
+        fetchAndDisplayUsers();
+        break;
+    }
+  });
+
+  userTable.addEventListener("click", (e) => {
+    // prevent editUser firing on other table-related elements
+    if (e.target.tagName === "TD") {
+      editUser(e);
+    }
+  });
