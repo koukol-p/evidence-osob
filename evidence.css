@@ -85,3 +85,10 @@ table {
     margin-top: 2rem;
     border-collapse: collapse;
 }
+tbody > tr {
+    cursor: pointer;
+}
+tbody > tr:hover {
+    background-color: #b8c7da;
+;
+}

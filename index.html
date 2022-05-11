@@ -13,14 +13,14 @@
       <button id="show-table">Zobrazit seznam</button>
     </header>
     <main class="container">
-      <form id="evidence-form">
+      <form id="user-form">
         <div class="input-group">
           <label for="name">Jméno</label>
-          <input id="name" type="text" />
+          <input id="name" type="text" required />
         </div>
         <div class="input-group">
           <label for="surname">Příjmení</label>
-          <input id="surname" type="text" />
+          <input id="surname" type="text" required />
         </div>
 
         <div class="input-group">
@@ -34,25 +34,22 @@
 
         <div class="input-group">
           <label for="birth">Datum narození</label>
-          <input id="birth" type="date" />
+          <input id="birth" type="date" required />
         </div>
 
         <button>Uložit</button>
       </form>
       <!-- -->
-      <table id="evidence-table">
-          <tr>
+      <table id="user-table">
+        <thead>  
+        <tr>
               <th>Příjmení</th>
               <th>Jméno</th>
               <th>Pohlaví</th>
               <th>Datum narození</th>
           </tr>
-          <tr>
-              <td>NameTeshihihihihihiafadůdjsdjkasůt</td>
-              <td>NameTest</td>
-              <td>Muž</td>
-              <td>26.5.1994</td>
-          </tr>
+        </thead>
+          <tbody></tbody>
       </table>
     </main>
     <script src="evidence.js"></script>
