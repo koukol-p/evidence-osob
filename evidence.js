@@ -16,6 +16,7 @@ function createUUID() {
 header.addEventListener("click", (e) => {
   switch (e.target.id) {
     case "show-form":
+        localStorage.removeItem("currentUUID")
       userForm.style.display = "block";
       userTable.style.display = "none";
       break;
@@ -35,37 +36,66 @@ userForm.addEventListener("submit", (e) => {
   const surname = document.querySelector("#surname").value;
   const gender = document.querySelector("#gender").value;
   const birth = document.querySelector("#birth").value;
-  const uuid = createUUID();
-  console.log(name, surname, gender, birth, uuid);
-  const newUser = {
-    uuid,
-    name,
-    surname,
-    gender,
-    birth,
-  };
-  //in case of non-existing user key, parse empty JSON array
-  localStorage.setItem(
-    "users",
-    JSON.stringify([
-      ...JSON.parse(localStorage.getItem("users") || "[]"),
-      newUser,
-    ])
-  );
+
+  if (localStorage.getItem("currentUUID") === null) {
+      console.log("UUID null, creating user")
+    const uuid = createUUID();
+    const newUser = {
+      uuid,
+      name,
+      surname,
+      gender,
+      birth,
+    };
+    
+    localStorage.setItem(uuid, JSON.stringify(newUser));
+  } else {
+    console.log("UUID exists")
+    const currentUUID = localStorage.getItem("currentUUID");
+    
+    console.log("SETTING", JSON.stringify({
+        uuid: currentUUID,
+        name,
+        surname,
+        gender,
+        birth,
+      }))
+      
+    localStorage.setItem(
+        
+      currentUUID,
+      JSON.stringify({
+        uuid: currentUUID,
+        name,
+        surname,
+        gender,
+        birth,
+      })
+    );
+  }
+
   // "redirect"
-  fetchAndDisplayUsers();
+
   userTable.style.display = "block";
   userForm.style.display = "none";
+  fetchAndDisplayUsers();
 });
 
 const fetchAndDisplayUsers = () => {
-  const users = JSON.parse(localStorage.getItem("users"));
+  console.log(Object.keys(localStorage));
+
+  const users = Object.keys(localStorage).filter(key => key !== "currentUUID").map((k) => {
+      console.log(localStorage.getItem(k))
+    return JSON.parse(localStorage.getItem(k));
+  });
+
   console.log(users);
 
   //reset table on new fetch
   userTable.children[1].replaceChildren([]);
 
   const userElements = users.map((u) => {
+      console.log(u)
     const userElement = document.createElement("tr");
     console.log(u);
     const nameCell = document.createElement("td");
@@ -94,9 +124,7 @@ const fetchAndDisplayUsers = () => {
 
 const editUser = (event) => {
   const clickedElement = event.target.parentElement; // select parent <tr> instead of clicked <td>
-  const userObj = JSON.parse(localStorage.getItem("users")).find(
-    (u) => u.uuid === clickedElement.uuid
-  );
+  const userObj = JSON.parse(localStorage.getItem(clickedElement.uuid));
 
   const nameField = document.querySelector("#name");
   const surnameField = document.querySelector("#surname");
@@ -109,6 +137,7 @@ const editUser = (event) => {
   genderField.value = userObj.gender;
   birthField.value = userObj.birth;
 
+  localStorage.setItem("currentUUID", clickedElement.uuid);
   userForm.style.display = "block";
   userTable.style.display = "none";
 };
