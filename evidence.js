@@ -183,6 +183,7 @@ const fetchAndDisplayUsers = () => {
     .map((k) => {
       return JSON.parse(localStorage.getItem(k));
     })
+    .sort(sortBy("address"))
     .sort(sortBy("name"))
     .sort(sortBy("surname"));
 
