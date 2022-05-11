@@ -4,8 +4,6 @@ const userTable = document.querySelector("#user-table");
 const header = document.querySelector("header");
 const buttonDelete = document.querySelector(".btn-delete");
 
-window.onload
-
 //utils
 function createUUID() {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
@@ -20,6 +18,17 @@ const clearForm = () => {
   document.querySelector("#gender").value = "M";
   document.querySelector("#birth").value = "";
 };
+const showForm = () => {
+    if(!localStorage.currentUUID) {
+        buttonDelete.style.display = "none";
+    }
+  userForm.style.display = "block";
+  userTable.style.display = "none";
+};
+const showTable = () => {
+  userTable.style.display = "table";
+  userForm.style.display = "none";
+};
 
 // "page" toggle
 header.addEventListener("click", (e) => {
@@ -27,13 +36,10 @@ header.addEventListener("click", (e) => {
     case "show-form":
       localStorage.removeItem("currentUUID");
       clearForm();
-      userForm.style.display = "block";
-      userTable.style.display = "none";
+      showForm();
       break;
     case "show-table":
-      userTable.style.display = "block";
-      userForm.style.display = "none";
-      // todo - fetch data from localStorage
+      showTable();
       fetchAndDisplayUsers();
       break;
   }
@@ -41,7 +47,6 @@ header.addEventListener("click", (e) => {
 
 // form submit
 userForm.addEventListener("submit", (e) => {
-
   e.preventDefault();
   const name = document.querySelector("#name").value;
   const surname = document.querySelector("#surname").value;
@@ -59,7 +64,6 @@ userForm.addEventListener("submit", (e) => {
     };
 
     localStorage.setItem(uuid, JSON.stringify(newUser));
-
   } else {
     const currentUUID = localStorage.getItem("currentUUID");
 
@@ -77,15 +81,13 @@ userForm.addEventListener("submit", (e) => {
 
   // "redirect"
 
-  userTable.style.display = "block";
-  userForm.style.display = "none";
+  showTable();
   localStorage.removeItem("currentUUID");
-  clearForm()
+  clearForm();
   fetchAndDisplayUsers();
 });
 
 const fetchAndDisplayUsers = () => {
-
   const users = Object.keys(localStorage)
     .filter((key) => key !== "currentUUID")
     .map((k) => {
@@ -102,14 +104,14 @@ const fetchAndDisplayUsers = () => {
     const surnameCell = document.createElement("td");
     surnameCell.innerText = u.surname;
     const genderCell = document.createElement("td");
-    genderCell.innerText = (u.gender === "F") ? "Žena" : "Muž";
+    genderCell.innerText = u.gender === "F" ? "Žena" : "Muž";
     const birthCell = document.createElement("td");
     birthCell.innerText = u.birth;
 
     userElement.uuid = u.uuid;
 
-    userElement.appendChild(nameCell);
     userElement.appendChild(surnameCell);
+    userElement.appendChild(nameCell);
     userElement.appendChild(genderCell);
     userElement.appendChild(birthCell);
     return userElement;
@@ -135,28 +137,25 @@ const editUser = (event) => {
   genderField.value = userObj.gender;
   birthField.value = userObj.birth;
 
-    //show delete btn
-    buttonDelete.style.display = "block"
+  //show delete btn
+  buttonDelete.style.display = "block";
 
   localStorage.setItem("currentUUID", clickedElement.uuid);
-  userForm.style.display = "block";
-  userTable.style.display = "none";
+  showForm();
 };
 userTable.addEventListener("click", (e) => {
-    // prevent editUser firing on other table-related elements 
-    if(e.target.tagName === "TD") {
-        editUser(e)
-    } 
+  // prevent editUser firing on other table-related elements
+  if (e.target.tagName === "TD") {
+    editUser(e);
+  }
 });
 
 const removeUser = () => {
-    localStorage.removeItem(localStorage.getItem("currentUUID"))
-}
+  localStorage.removeItem(localStorage.getItem("currentUUID"));
+};
 buttonDelete.addEventListener("click", () => {
-    removeUser();
-
-    userTable.style.display = "block";
-      userForm.style.display = "none";
-      // todo - fetch data from localStorage
-      fetchAndDisplayUsers();
-})
+  removeUser();
+  showTable();
+  // todo - fetch data from localStorage
+  fetchAndDisplayUsers();
+});
