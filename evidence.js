@@ -2,6 +2,9 @@ const userForm = document.querySelector("#user-form");
 const userTable = document.querySelector("#user-table");
 
 const header = document.querySelector("header");
+const buttonDelete = document.querySelector(".btn-delete");
+
+window.onload
 
 //utils
 function createUUID() {
@@ -11,12 +14,19 @@ function createUUID() {
     return v.toString(16);
   });
 }
+const clearForm = () => {
+  document.querySelector("#name").value = "";
+  document.querySelector("#surname").value = "";
+  document.querySelector("#gender").value = "M";
+  document.querySelector("#birth").value = "";
+};
 
 // "page" toggle
 header.addEventListener("click", (e) => {
   switch (e.target.id) {
     case "show-form":
-        localStorage.removeItem("currentUUID")
+      localStorage.removeItem("currentUUID");
+      clearForm();
       userForm.style.display = "block";
       userTable.style.display = "none";
       break;
@@ -31,6 +41,7 @@ header.addEventListener("click", (e) => {
 
 // form submit
 userForm.addEventListener("submit", (e) => {
+
   e.preventDefault();
   const name = document.querySelector("#name").value;
   const surname = document.querySelector("#surname").value;
@@ -38,7 +49,6 @@ userForm.addEventListener("submit", (e) => {
   const birth = document.querySelector("#birth").value;
 
   if (localStorage.getItem("currentUUID") === null) {
-      console.log("UUID null, creating user")
     const uuid = createUUID();
     const newUser = {
       uuid,
@@ -47,22 +57,13 @@ userForm.addEventListener("submit", (e) => {
       gender,
       birth,
     };
-    
+
     localStorage.setItem(uuid, JSON.stringify(newUser));
+
   } else {
-    console.log("UUID exists")
     const currentUUID = localStorage.getItem("currentUUID");
-    
-    console.log("SETTING", JSON.stringify({
-        uuid: currentUUID,
-        name,
-        surname,
-        gender,
-        birth,
-      }))
-      
+
     localStorage.setItem(
-        
       currentUUID,
       JSON.stringify({
         uuid: currentUUID,
@@ -78,32 +79,30 @@ userForm.addEventListener("submit", (e) => {
 
   userTable.style.display = "block";
   userForm.style.display = "none";
+  localStorage.removeItem("currentUUID");
+  clearForm()
   fetchAndDisplayUsers();
 });
 
 const fetchAndDisplayUsers = () => {
-  console.log(Object.keys(localStorage));
 
-  const users = Object.keys(localStorage).filter(key => key !== "currentUUID").map((k) => {
-      console.log(localStorage.getItem(k))
-    return JSON.parse(localStorage.getItem(k));
-  });
-
-  console.log(users);
+  const users = Object.keys(localStorage)
+    .filter((key) => key !== "currentUUID")
+    .map((k) => {
+      return JSON.parse(localStorage.getItem(k));
+    });
 
   //reset table on new fetch
   userTable.children[1].replaceChildren([]);
 
   const userElements = users.map((u) => {
-      console.log(u)
     const userElement = document.createElement("tr");
-    console.log(u);
     const nameCell = document.createElement("td");
     nameCell.innerText = u.name;
     const surnameCell = document.createElement("td");
     surnameCell.innerText = u.surname;
     const genderCell = document.createElement("td");
-    genderCell.innerText = u.gender;
+    genderCell.innerText = (u.gender === "F") ? "Žena" : "Muž";
     const birthCell = document.createElement("td");
     birthCell.innerText = u.birth;
 
@@ -116,7 +115,6 @@ const fetchAndDisplayUsers = () => {
     return userElement;
   });
 
-  console.log(userElements);
   userElements.forEach((el) => {
     userTable.children[1].appendChild(el);
   });
@@ -137,8 +135,28 @@ const editUser = (event) => {
   genderField.value = userObj.gender;
   birthField.value = userObj.birth;
 
+    //show delete btn
+    buttonDelete.style.display = "block"
+
   localStorage.setItem("currentUUID", clickedElement.uuid);
   userForm.style.display = "block";
   userTable.style.display = "none";
 };
-userTable.addEventListener("click", editUser);
+userTable.addEventListener("click", (e) => {
+    // prevent editUser firing on other table-related elements 
+    if(e.target.tagName === "TD") {
+        editUser(e)
+    } 
+});
+
+const removeUser = () => {
+    localStorage.removeItem(localStorage.getItem("currentUUID"))
+}
+buttonDelete.addEventListener("click", () => {
+    removeUser();
+
+    userTable.style.display = "block";
+      userForm.style.display = "none";
+      // todo - fetch data from localStorage
+      fetchAndDisplayUsers();
+})

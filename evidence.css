@@ -62,20 +62,36 @@ select, input {
     padding: 4px;
     flex-grow: 1;
 }
+
+.btn-group {
+    display: flex;
+}
 form button {
     padding: 6px;
     border: 0;
     outline: none;
-    background-color: #b8c7da;
+    margin: 0 2px;
     border-radius: 4px;
     border: 1px solid black;
+    flex: 1;
+    cursor: pointer;
 }
-form button:hover {
+.btn-submit {
+    background-color: #b8c7da;
+}
+.btn-submit:hover {
     background-color: #92a4ba;
     box-shadow: 2px 3px 4px rgba(0, 0, 0, 0.05);
 }
-
-
+.btn-delete {
+    display: none;
+    background-color: rgb(219, 74, 21);
+    color: white;
+}
+.btn-delete:hover {
+    background-color: rgb(197, 57, 6);
+    box-shadow: 2px 3px 4px rgba(0, 0, 0, 0.05);
+}
 /* ---- */
 table, th,td {
     border: 1px solid black;

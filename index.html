@@ -24,32 +24,33 @@
         </div>
 
         <div class="input-group">
-            <label for="gender">Pohlaví</label>
-            <select name="gender" id="gender">
-                <option value="M">Muž</option>
-                <option value="F">Žena</option>
-
-            </select>
+          <label for="gender">Pohlaví</label>
+          <select name="gender" id="gender">
+            <option value="M">Muž</option>
+            <option value="F">Žena</option>
+          </select>
         </div>
 
         <div class="input-group">
           <label for="birth">Datum narození</label>
           <input id="birth" type="date" required />
         </div>
-
-        <button>Uložit</button>
+        <div class="btn-group">
+          <button type="button" class="btn-delete">Smazat</button>
+          <button type="submit" class="btn-submit">Uložit</button>
+        </div>
       </form>
       <!-- -->
       <table id="user-table">
-        <thead>  
-        <tr>
-              <th>Příjmení</th>
-              <th>Jméno</th>
-              <th>Pohlaví</th>
-              <th>Datum narození</th>
+        <thead>
+          <tr>
+            <th>Příjmení</th>
+            <th>Jméno</th>
+            <th>Pohlaví</th>
+            <th>Datum narození</th>
           </tr>
         </thead>
-          <tbody></tbody>
+        <tbody></tbody>
       </table>
     </main>
     <script src="evidence.js"></script>
