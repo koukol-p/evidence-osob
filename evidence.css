@@ -12,7 +12,7 @@ header {
     display: flex;
     flex-direction: row;
 }
-header > button {
+header button {
     border: 1px solid #555;
     outline: 0;
     flex-grow: 1;
@@ -59,6 +59,11 @@ label {
 select, input {
     padding: 4px;
     flex-grow: 1;
+}
+.input-readonly {
+    background-color: #ddd;
+    outline: none;
+    border: 0;
 }
 
 .btn-group {
@@ -115,4 +120,32 @@ tbody > tr {
 tbody > tr:hover {
     background-color: #b8c7da;
 ;
+}
+
+
+/* ---- */
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+.address-container {
+    position: relative;
+}
+.suggestion-list {
+    list-style: none;
+    position: absolute;
+    top: 26px;
+    left: 33%;
+    background-color: #b8c7da;
+    box-shadow: 2px 3px 4px rgba(0,0,0,0.2);
+
+}
+.suggestion-list li {
+    padding: 8px;
+    cursor: pointer;
+
+}
+.suggestion-list li:hover {
+    background-color: #c4d2e4;
 }
