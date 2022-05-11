@@ -19,9 +19,9 @@ const clearForm = () => {
   document.querySelector("#birth").value = "";
 };
 const showForm = () => {
-    if(!localStorage.currentUUID) {
-        buttonDelete.style.display = "none";
-    }
+  if (!localStorage.currentUUID) {
+    buttonDelete.style.display = "none";
+  }
   userForm.style.display = "block";
   userTable.style.display = "none";
 };
@@ -29,6 +29,23 @@ const showTable = () => {
   userTable.style.display = "table";
   userForm.style.display = "none";
 };
+const dateStringFormat = (dateStr) => {
+  const [y, m, d] = dateStr.split("-");
+  return [d, m, y].join(".");
+};
+const sortBy = (key) => {
+    return (a, b) => {
+        if (a[key] < b[key]) {
+            return -1;
+        }
+        if(a[key] > b[key]) {
+            return 1;
+        }
+        return 0;
+        
+    }
+}
+
 
 // "page" toggle
 header.addEventListener("click", (e) => {
@@ -51,8 +68,8 @@ userForm.addEventListener("submit", (e) => {
   const name = document.querySelector("#name").value;
   const surname = document.querySelector("#surname").value;
   const gender = document.querySelector("#gender").value;
-  const birth = document.querySelector("#birth").value;
-
+  const birth = dateStringFormat(document.querySelector("#birth").value);
+    console.log("birth", birth)
   if (localStorage.getItem("currentUUID") === null) {
     const uuid = createUUID();
     const newUser = {
@@ -92,7 +109,10 @@ const fetchAndDisplayUsers = () => {
     .filter((key) => key !== "currentUUID")
     .map((k) => {
       return JSON.parse(localStorage.getItem(k));
-    });
+    })
+    .sort(sortBy("name"))
+    .sort(sortBy("surname"))
+
 
   //reset table on new fetch
   userTable.children[1].replaceChildren([]);
