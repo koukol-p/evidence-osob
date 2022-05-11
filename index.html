@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="evidence.css" />
+    <title>Evidence osob</title>
+  </head>
+  <body>
+    <header>
+      <button id="show-form">Založit osobu</button>
+      <button id="show-table">Zobrazit seznam</button>
+    </header>
+    <main class="container">
+      <form id="evidence-form">
+        <div class="input-group">
+          <label for="name">Jméno</label>
+          <input id="name" type="text" />
+        </div>
+        <div class="input-group">
+          <label for="surname">Příjmení</label>
+          <input id="surname" type="text" />
+        </div>
+
+        <div class="input-group">
+            <label for="gender">Pohlaví</label>
+            <select name="gender" id="gender">
+                <option value="M">Muž</option>
+                <option value="F">Žena</option>
+
+            </select>
+        </div>
+
+        <div class="input-group">
+          <label for="birth">Datum narození</label>
+          <input id="birth" type="date" />
+        </div>
+
+        <button>Uložit</button>
+      </form>
+      <!-- -->
+      <table id="evidence-table">
+          <tr>
+              <th>Příjmení</th>
+              <th>Jméno</th>
+              <th>Pohlaví</th>
+              <th>Datum narození</th>
+          </tr>
+          <tr>
+              <td>NameTeshihihihihihiafadůdjsdjkasůt</td>
+              <td>NameTest</td>
+              <td>Muž</td>
+              <td>26.5.1994</td>
+          </tr>
+      </table>
+    </main>
+    <script src="evidence.js"></script>
+  </body>
+</html>
